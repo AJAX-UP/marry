@@ -88,7 +88,7 @@ public class LoginController {
 
     @ApiOperation(value="测试登录", notes="测试登录")
     @PostMapping("/tset")
-    public String tset() {
-        return "测试登录成功";
+    public String tset(@RequestParam("phone") String phone,HttpServletRequest request) {
+        return "测试登录成功"+phone;
     }
 }
