@@ -20,4 +20,6 @@ public interface UserMapper {
 
     User findByUesrName(String userName);
 
+    User findByPhone(String phone);
+
 }

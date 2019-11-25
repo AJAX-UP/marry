@@ -278,4 +278,12 @@
         from user
         where username = #{userName,jdbcType=VARCHAR}
     </select>
+
+    <select id="findByPhone" resultMap="UserResultMap" parameterType="java.lang.String" >
+        select
+        <include refid="Base_Column_List" />
+        from user
+        where phone = #{phone,jdbcType=VARCHAR}
+    </select>
+
 </mapper>

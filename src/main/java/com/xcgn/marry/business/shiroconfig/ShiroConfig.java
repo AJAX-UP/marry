@@ -1,7 +1,11 @@
 package com.xcgn.marry.business.shiroconfig;
 
+import org.apache.shiro.authc.AbstractAuthenticator;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
+import org.apache.shiro.authc.pam.AtLeastOneSuccessfulStrategy;
+import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
 import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.realm.Realm;
 import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
@@ -15,7 +19,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.servlet.HandlerExceptionResolver;
+
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -53,7 +60,8 @@ public class ShiroConfig {
         // 配置不会被拦截的链接 顺序判断
         filterChainDefinitionMap.put("/static/**", "anon");
         filterChainDefinitionMap.put("/login/", "anon");
-        filterChainDefinitionMap.put("/login/ajaxLogin", "anon");
+        filterChainDefinitionMap.put("/login/userNameLogin", "anon");
+        filterChainDefinitionMap.put("/login/phoneLogin", "anon");
         filterChainDefinitionMap.put("/swagger-ui.html", "anon");
         filterChainDefinitionMap.put("/swagger-resources", "anon");
         filterChainDefinitionMap.put("/v2/api-docs", "anon");
@@ -91,15 +99,57 @@ public class ShiroConfig {
         return myShiroRealm;
     }
 
+    @Bean
+    public PhoneRealm phoneRealm(){
+        PhoneRealm phoneRealm = new PhoneRealm();
+//        phoneRealm.setCredentialsMatcher(hashedCredentialsMatcher());
+//        phoneRealm.setCacheManager(cacheManager());
+        return phoneRealm;
+    }
+
+    /**
+     * 认证器
+     */
+    @Bean
+    public AbstractAuthenticator abstractAuthenticator(MarryShiroRealm userRealm, PhoneRealm phoneRealm){
+        // 自定义模块化认证器，用于解决多realm抛出异常问题
+        ModularRealmAuthenticator authenticator = new CustomModularRealmAuthenticator();
+        // 认证策略：AtLeastOneSuccessfulStrategy(默认)，AllSuccessfulStrategy，FirstSuccessfulStrategy
+        authenticator.setAuthenticationStrategy(new AtLeastOneSuccessfulStrategy());
+        // 加入realms
+        List<Realm> realms = new ArrayList<>();
+        realms.add(userRealm);
+        realms.add(phoneRealm);
+        authenticator.setRealms(realms);
+        return authenticator;
+    }
+
+
+//    @Bean
+//    public SecurityManager securityManager() {
+//        DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
+//        securityManager.setRealm(myShiroRealm());
+//        // 自定义session管理 使用redis
+//        securityManager.setSessionManager(sessionManager());
+//        // 自定义缓存实现 使用redis
+//        securityManager.setCacheManager(cacheManager());
+//        return securityManager;
+//    }
 
     @Bean
-    public SecurityManager securityManager() {
+    public SecurityManager securityManager(MarryShiroRealm userRealm, PhoneRealm phoneRealm, AbstractAuthenticator abstractAuthenticator) {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
-        securityManager.setRealm(myShiroRealm());
-        // 自定义session管理 使用redis
-        securityManager.setSessionManager(sessionManager());
-        // 自定义缓存实现 使用redis
+        // 设置realms
+        List<Realm> realms = new ArrayList<>();
+        realms.add(userRealm);
+        realms.add(phoneRealm);
+        securityManager.setRealms(realms);
+        // 自定义缓存实现，可以使用redis
         securityManager.setCacheManager(cacheManager());
+        // 自定义session管理，可以使用redis
+        securityManager.setSessionManager(sessionManager());
+        // 认证器
+        securityManager.setAuthenticator(abstractAuthenticator);
         return securityManager;
     }
 
