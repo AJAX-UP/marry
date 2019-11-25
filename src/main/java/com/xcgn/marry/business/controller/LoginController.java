@@ -30,11 +30,11 @@ public class LoginController {
      */
     @ApiOperation(value="用户名登录", notes="根据用户名密码登录")
     @PostMapping("/userNameLogin")
-    public String userNameLogin(@RequestParam("userName") String userName, @RequestParam("password") String password, HttpServletRequest request) {
+    public String userNameLogin(@RequestParam("username") String username, @RequestParam("password") String password, HttpServletRequest request) {
         JSONObject jsonObject = new JSONObject();
         Subject subject = SecurityUtils.getSubject();
         logger.error("当前为日志测试");
-        UsernamePasswordToken token = new UsernamePasswordToken(userName, password);
+        UsernamePasswordToken token = new UsernamePasswordToken(username, password);
         try {
             subject.login(token);
 

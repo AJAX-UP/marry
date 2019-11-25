@@ -13,10 +13,20 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @return 
  */ 
-//@Component
+@Component
 public class CommonIntercepter implements HandlerInterceptor {
 
-
+    /**
+     * description: 自定义拦截，处理登录的post请求
+     * version: 1.0 
+     * date: 2019/11/25 18:09
+     * author: ajaxgo
+     * 
+     * @param request
+ * @param response
+ * @param handler
+     * @return boolean
+     */ 
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) throws Exception {
