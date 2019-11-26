@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 @Api("登录接口")
 @RestController
@@ -29,12 +30,13 @@ public class LoginController {
      * @return
      */
     @ApiOperation(value="用户名登录", notes="根据用户名密码登录")
-    @PostMapping("/userNameLogin")
-    public String userNameLogin(@RequestParam("username") String username, @RequestParam("password") String password, HttpServletRequest request) {
+    @PostMapping(value = "/userNameLogin",produces = "application/json;charset=UTF-8")
+    @CrossOrigin
+    public String userNameLogin(@RequestBody Map<String,Object> map, HttpServletRequest request) {
         JSONObject jsonObject = new JSONObject();
         Subject subject = SecurityUtils.getSubject();
         logger.error("当前为日志测试");
-        UsernamePasswordToken token = new UsernamePasswordToken(username, password);
+        UsernamePasswordToken token = new UsernamePasswordToken(map.get("username").toString(),map.get("password").toString());
         try {
             subject.login(token);
 
@@ -86,9 +88,12 @@ public class LoginController {
         return jsonObject.toString();
     }
 
-    @ApiOperation(value="测试登录", notes="测试登录")
-    @PostMapping("/tset")
-    public String tset(@RequestParam("phone") String phone,HttpServletRequest request) {
-        return "测试登录成功"+phone;
+    @ApiOperation(value="获取用户信息", notes="获取用户信息")
+    @GetMapping("/info")
+    public String info(HttpServletRequest request)
+    {
+        Subject sub = SecurityUtils.getSubject();
+        User obj = (User)sub.getPrincipal();
+        return "测试登录成功";
     }
 }
