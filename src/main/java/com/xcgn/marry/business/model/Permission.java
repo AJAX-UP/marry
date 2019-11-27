@@ -2,12 +2,13 @@ package com.xcgn.marry.business.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
- * 
- * 
+ *
+ *
  * @author ajaxgo
- * 
+ *
  * @date 2019-11-10
  */
 public class Permission implements Serializable {
@@ -64,6 +65,16 @@ public class Permission implements Serializable {
     private Date createTime;
 
     private Date updateTime;
+
+    private List<Permission> children;
+
+    public List<Permission> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<Permission> children) {
+        this.children = children;
+    }
 
     public Integer getId() {
         return id;

@@ -43,13 +43,13 @@ public class ShiroConfig {
 
     /**
      * description: 过滤设置
-     * version: 1.0 
-     * date: 2019/11/12 10:18 
+     * version: 1.0
+     * date: 2019/11/12 10:18
      * author: ajaxgo
-     * 
+     *
      * @param securityManager
      * @return org.apache.shiro.spring.web.ShiroFilterFactoryBean
-     */ 
+     */
     @Bean("shiroFilter")
     public ShiroFilterFactoryBean shirFilter(SecurityManager securityManager) {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
@@ -71,6 +71,7 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/webjars/springfox-swagger-ui/**", "anon");
         filterChainDefinitionMap.put("/swagger-resources/configuration/**", "anon");
         filterChainDefinitionMap.put("/**", "authc");
+        //filterChainDefinitionMap.put("/**", "anon");
         //配置shiro默认登录界面地址，前后端分离中登录界面跳转应由前端路由控制，后台仅返回json数据
         //shiroFilterFactoryBean.setLoginUrl("/unauth");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
@@ -79,13 +80,13 @@ public class ShiroConfig {
 
     /**
      * description: 凭证匹配器
-     * version: 1.0 
-     * date: 2019/11/12 10:20 
+     * version: 1.0
+     * date: 2019/11/12 10:20
      * author: ajaxgo
-     * 
-     * @param 
+     *
+     * @param
      * @return org.apache.shiro.authc.credential.HashedCredentialsMatcher
-     */ 
+     */
     @Bean
     public HashedCredentialsMatcher hashedCredentialsMatcher() {
         HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();

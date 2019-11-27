@@ -57,12 +57,12 @@ public class LoginController {
     }
     /**
      * description: 手机验证码登录
-     * version: 1.0 
-     * date: 2019/11/25 14:38 
+     * version: 1.0
+     * date: 2019/11/25 14:38
      * author: ajaxgo
      *
      * @return java.lang.String
-     */ 
+     */
     @ApiOperation(value="手机验证码登录", notes="根据手机验证码登录")
     @PostMapping("/phoneLogin")
     public String phoneLogin(@RequestParam("phone") String phone, @RequestParam("code") String code, HttpServletRequest request) {

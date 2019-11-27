@@ -18,12 +18,12 @@
     </resultMap>
 
     <sql id="Base_Column_List" >
-        id, name, description, url, perms, parent_id, type, order_num, icon, status, create_time, 
+        id, name, description, url, perms, parent_id, type, order_num, icon, status, create_time,
         update_time
     </sql>
 
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-        select 
+        select
         <include refid="Base_Column_List" />
         from permission
         where id = #{id,jdbcType=INTEGER}
@@ -35,14 +35,14 @@
     </delete>
 
     <insert id="insert" parameterType="com.xcgn.marry.business.model.Permission" >
-        insert into permission (id, name, description, 
-            url, perms, parent_id, 
-            type, order_num, icon, 
+        insert into permission (id, name, description,
+            url, perms, parent_id,
+            type, order_num, icon,
             status, create_time, update_time
             )
-        values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
-            #{url,jdbcType=VARCHAR}, #{perms,jdbcType=VARCHAR}, #{parentId,jdbcType=INTEGER}, 
-            #{type,jdbcType=INTEGER}, #{orderNum,jdbcType=INTEGER}, #{icon,jdbcType=VARCHAR}, 
+        values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR},
+            #{url,jdbcType=VARCHAR}, #{perms,jdbcType=VARCHAR}, #{parentId,jdbcType=INTEGER},
+            #{type,jdbcType=INTEGER}, #{orderNum,jdbcType=INTEGER}, #{icon,jdbcType=VARCHAR},
             #{status,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
             )
     </insert>
@@ -182,4 +182,32 @@
             update_time = #{updateTime,jdbcType=TIMESTAMP}
         where id = #{id,jdbcType=INTEGER}
     </update>
+
+    <resultMap id="PermissionResultMap"  type="com.xcgn.marry.business.model.Permission" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="description" property="description" jdbcType="VARCHAR" />
+        <result column="url" property="url" jdbcType="VARCHAR" />
+        <result column="perms" property="perms" jdbcType="VARCHAR" />
+        <result column="parent_id" property="parentId" jdbcType="INTEGER" />
+        <result column="type" property="type" jdbcType="INTEGER" />
+        <result column="order_num" property="orderNum" jdbcType="INTEGER" />
+        <result column="icon" property="icon" jdbcType="VARCHAR" />
+        <result column="status" property="status" jdbcType="INTEGER" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+        <collection property="children" column="id" select="findChildren" ofType="com.xcgn.marry.business.model.Permission"></collection>
+    </resultMap>
+    <select id="findNavTree" resultMap="PermissionResultMap" parameterType="java.lang.String" >
+        select
+        <include refid="Base_Column_List" />
+        from permission
+    </select>
+
+    <select id="findChildren" resultMap="BaseResultMap" parameterType="java.lang.String" >
+        select
+        <include refid="Base_Column_List" />
+        from permission
+        where parent_id = #{id,jdbcType=INTEGER}
+    </select>
 </mapper>
